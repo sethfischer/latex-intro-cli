@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ASPELL_CONFIG="./aspell.config"
+ASPELL_PERSONAL="./personal.en.pws"
+
+CMD="aspell --per-conf=$ASPELL_CONFIG --personal=$ASPELL_PERSONAL check"
+
+find ../ -name "*.tex" -exec $CMD "{}" \;
+
+exit;
+

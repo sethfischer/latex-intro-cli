@@ -1,0 +1,701 @@
+% rubber directives
+% rubber: depend helloworld/makefile
+% rubber: depend fragments/pdflatex.fragment.php
+
+\documentclass[compress]{beamer}
+
+\usepackage{alltt}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[absolute,overlay]{textpos}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage{tikz}
+
+
+\usetikzlibrary{shapes,arrows}
+
+
+% beamer configuration
+\title{An Introduction to \LaTeX{}}
+\subtitle{Creating PDF documents with command-line tools}
+\author[S. Fischer]{Seth Fischer}
+\institute[github.com/sethfischer]{
+    \href{https://github.com/sethfischer/}{github.com/sethfischer}
+}
+\usetheme{Luebeck}
+\setbeamertemplate{caption}[numbered]
+
+
+% listings package global configuration
+\lstset{
+    language={[LaTeX]TeX}
+}
+
+
+% define commands
+
+% typeset system paths as mono-spaced font
+\newcommand{\syspath}[1] {{\tt #1}}
+
+% typeset package names as mono-spaced font
+\newcommand{\pkgname}[1] {{\tt #1}}
+
+% place note in lower left-hand corner of frame
+\setbeamercolor{framesource}{fg=gray}
+\setbeamerfont{framesource}{size=\tiny}
+\newcommand{\source}[1]{\begin{textblock*}{7cm}(0.25cm,8.6cm)
+    \begin{beamercolorbox}[ht=0.5cm,left]{framesource}
+        \usebeamerfont{framesource}\usebeamercolor[fg]{framesource} {#1}
+    \end{beamercolorbox}
+\end{textblock*}}
+
+\def\bottom#1#2{\hbox{\vbox to #1{\vfill\hbox{#2}}}}
+
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+    %\begin{multicols}{2}
+        \tableofcontents[hideallsubsections]
+    %\end{multicols}
+\end{frame}
+
+\begin{frame}{Example markup}
+    \begin{itemize}
+        \item Many of the following markup examples are taken from the \LaTeX{} 
+            source for this presentation.
+        \item The complete hello world example can be found in the 
+            \syspath{helloworld} directory.
+        \item \LaTeX{} markup fragments may be found in the \syspath{fragments} 
+            directory.
+        \item Source code for this presentation is available at 
+            \href{https://github.com/sethfischer/latex-intro-cli}
+            {github.com/sethfischer/latex-intro-cli}
+    \end{itemize}
+\end{frame}
+
+
+\section{Introduction}
+
+\subsection{\LaTeX{}}
+
+\begin{frame}{What is \LaTeX{}?}
+    \LaTeX{} is a high-quality typesetting system and markup language used to 
+    describe document structure.
+
+    \begin{itemize}
+        \item Pronounced ``Lah-tec'' or ``Lay-tec''.
+        \item Developed in 1985 by Leslie Lampor.
+        \item \LaTeX{} is a set of macros for Donald E. Knuth's \TeX{} 
+            typesetting language.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{What is \LaTeX{} used for?}
+    \LaTeX{} contains features for:
+
+    \begin{itemize}
+        \item Typesetting journal articles, technical reports, books, and slide 
+            presentations.
+        \item Control over large documents containing sectioning, 
+            cross-references, tables and figures.
+        \item Typesetting of mathematical formula.
+        \item Automatic generation of bibliographies and indices.
+    \end{itemize}
+
+\end{frame}
+
+
+\subsection{Installation}
+
+\begin{frame}[fragile]{Installation}
+
+    \begin{block}{Debian-based distributions}
+\begin{lstlisting}
+# apt-get install texlive-full
+\end{lstlisting}
+        {
+            \footnotesize
+            \pkgname{texlive-full} is a meta-package which pulls in all the 
+            relevant texlive packages.
+        }
+    \end{block}
+
+    \begin{block}{Manual installation}
+        See \href{http://www.tug.org/texlive/}{http://www.tug.org/texlive/}
+    \end{block}
+
+    \begin{block}{In-browser}
+        Visit \href{https://www.writelatex.com/}{https://www.writelatex.com/}
+    \end{block}
+
+\end{frame}
+
+\subsection{Hello world}
+
+\begin{frame}[fragile]{Hello world}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+            \begin{block}{Markup}
+                \lstinputlisting{helloworld/helloworld.tex}
+            \end{block}
+        \column{0.5\textwidth}
+            \begin{block}{Output}
+                \setlength\fboxsep{0pt}
+                \setlength\fboxrule{0.5pt}
+                \begin{center}
+                    \colorbox{white}{\fbox{
+                        \includegraphics[height=4.5cm]{helloworld/helloworld.pdf}
+                    }}
+                \end{center}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Compilation with pdflatex}
+
+    \begin{block}{Terminal}
+\begin{lstlisting}
+$ pdflatex helloworld
+\end{lstlisting}
+    \end{block}
+
+    \begin{block}{Makefile}
+        \lstinputlisting[
+            language={[gnu]make},
+            showtabs=true
+        ]{helloworld/makefile}
+    \end{block}
+
+\end{frame}
+
+\subsection{Basics}
+
+\begin{frame}{Reserved characters}
+    \begin{center}
+        \begin{tabular}{llr}
+            \toprule
+            Character           & Escaped                           \\
+            \midrule
+            \#                  & \textbackslash{}\#                \\
+            \midrule
+            \$                  & \textbackslash{}\$                \\
+            \midrule
+            \%                  & \textbackslash{}\%                \\
+            \midrule
+            \^{}                & \textbackslash{}\^{}\{\}          \\
+            \midrule
+            \&                  & \textbackslash{}\&                \\
+            \midrule
+            \{                  & \textbackslash{}\{                \\
+            \midrule
+            \}                  & \textbackslash{}\{                \\
+            \midrule
+            \~{}                & \textbackslash{}\~{}              \\
+            \midrule
+            \textbackslash{}    & \textbackslash{}textbackslash\{\} \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Groups and environments}
+    \framesubtitle{The building blocks}
+    \begin{block}{Groups}
+\begin{lstlisting}
+{
+    \bf This is bold.
+}
+This is no longer bold.
+\end{lstlisting}
+    Used to restrict the range of action of a command.
+    \end{block}
+    \begin{block}{Environments}
+\begin{lstlisting}
+\begin{environmentname}
+    text to be influenced
+\end{environmentname}
+\end{lstlisting}
+    Affect a wider part of the document.
+    \end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]{Commands}
+    \begin{block}{Syntax}
+\begin{lstlisting}
+\commandname[opt1,opt2,...]{arg1}{arg2}...
+\end{lstlisting}
+    \end{block}
+    \begin{block}{Example}
+\begin{lstlisting}
+\includegraphics[height=4.5cm]{helloworld.pdf}
+\end{lstlisting}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Comments (and line breaks)}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+            \begin{block}{Markup}
+                \lstinputlisting{fragments/comment.fragment.tex}
+            \end{block}
+        \column{0.5\textwidth}
+            \begin{block}{Output}
+                \input{fragments/comment.fragment.tex}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\section{Markup}
+
+\subsection{Semantic structure}
+
+\begin{frame}[fragile]{Global structure}
+    Every input file must contain the following commands:
+\begin{lstlisting}
+\documentclass[options]{class}
+\usepackage{...}
+
+\begin{document}
+...
+\end{document}
+\end{lstlisting}
+\end{frame}
+
+\subsection{Classes}
+
+\begin{frame}{Document classes}
+    Some of the more common document classes are:
+    \begin{description}
+        \item[article] For articles in scientific journals, presentations, 
+            short reports, program documentation, \ldots
+        \item[minimal] As small as it can get. Only sets a page size and a base 
+            font.
+        \item[report] For longer reports, thesis, \ldots
+        \item[book] For books.
+        \item[memoir] Based on the book class, but can be used to create any 
+            kind of document.
+        \item[letter] For writing letters.
+        \item[beamer] For writing presentations (such as this).
+    \end{description}
+\end{frame}
+
+\subsection{Packages}
+
+\begin{frame}{Packages}
+    Packages extend the functionality of the selected document class. Among 
+    others, this presentation uses:
+    \begin{description}
+        \item[booktabs] Style tables.
+        \item[graphicx] Include images.
+        \item[hyperref] Create hyperlinks.
+        \item[listings] Syntax highlighting of code listings.
+        \item[textpos] Locate text at absolute positions on a page.
+    \end{description}
+\end{frame}
+
+\subsection{Common elements}
+
+\begin{frame}[fragile]{Chapters and sections}
+    \begin{center}
+        \begin{tabular}{llr}
+            \toprule
+            Level   & Command                   \\
+            \midrule
+            -1      & \verb|\part{}|            \\
+            \midrule
+            0       & \verb|\chapter{}|         \\
+            \midrule
+            1       & \verb|\section{}|         \\
+            \midrule
+            2       & \verb|\subsection{}|      \\
+            \midrule
+            3       & \verb|\subsubsection{}|   \\
+            \midrule
+            4       & \verb|\paragraph{}|       \\
+            \midrule
+            5       & \verb|\subparagraph{}|    \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Paragraphs}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+            \begin{block}{Markup}
+                \lstinputlisting{fragments/paragraphs.fragment.tex}
+            \end{block}
+        \column{0.5\textwidth}
+            \begin{block}{Output}
+                \input{fragments/paragraphs.fragment.tex}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Lists}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+            \begin{block}{Markup}
+                \lstinputlisting{fragments/lists.fragment.tex}
+            \end{block}
+        \column{0.5\textwidth}
+            \begin{block}{Output}
+                \input{fragments/lists.fragment.tex}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Tables}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+            \begin{block}{Markup}
+                \lstinputlisting{fragments/tabular.fragment.tex}
+            \end{block}
+        \column{0.5\textwidth}
+            \begin{block}{Output}
+                \input{fragments/tabular.fragment.tex}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Images}
+    \begin{columns}[T]
+        \column{0.7\textwidth}
+            \begin{block}{Markup}
+                \lstinputlisting{fragments/includegraphics.fragment.tex}
+            \end{block}
+        \column{0.3\textwidth}
+            \begin{block}{Output}
+                \input{fragments/includegraphics.fragment.tex}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\section{Macros}
+
+\begin{frame}[fragile]{New commands}
+    Define custom commands with \textbackslash{}newcommand.
+\begin{lstlisting}
+\newcommand{name}[num]{definition}
+\end{lstlisting}
+
+    \begin{block}{Markup}
+\begin{lstlisting}
+% typeset system paths as mono-spaced font
+\newcommand{\syspath}[1] {{\tt #1}}
+...
+The config directory is \syspath{/etc/apache2}
+\end{lstlisting}
+    \end{block}
+
+    \begin{block}{Output}
+        The config directory is \syspath{/etc/apache2}
+    \end{block}
+\end{frame}
+
+\section{Compilation}
+
+\subsection{The compilation process}
+
+\begin{frame}{The compilation process}
+
+    \tikzstyle{group} = [
+        shape=rectangle,
+        fill=lightgray,
+        draw=black
+    ]
+
+    \tikzstyle{source} = [
+        shape=rectangle,
+        rounded corners,
+        minimum width=1.5cm,
+        minimum height=0.5cm,
+        draw=black,
+        fill=white,
+        text centered
+    ]
+
+    \tikzstyle{output} = [
+        shape=rectangle,
+        rounded corners,
+        minimum height=0.6cm,
+        minimum width=2cm,
+        draw=black,
+        fill=white,
+        text centered
+    ]
+
+    \begin{center}
+        \begin{tikzpicture}[scale=1,transform shape]
+            \tikzstyle{every node}=[font=\small]
+            \tikzset{>=triangle 45}
+
+            \node (outputformats)
+                [group,minimum width=10cm,minimum height=2.5cm,]
+                at (0,0)
+                {};
+
+            \node (sourceformats)
+                [group,minimum width=2.5cm,minimum height=3cm,]
+                at (0,4)
+                {};
+
+            \node (tex) at (0,1) {Output formats};
+            \node (tex) at (0,2.75) {Source formats};
+
+            \node (tex) [source] at (0,5) {\TeX};
+            \node (latex) [source] at (0,3.5) {\LaTeX{}};
+            \node (postscript) [output] at (0,0) {PostScript};
+            \node (dvi) [output] at (3.75,0) {DVI};
+            \node (pdf) [output] at (-3.75,0) {PDF};
+
+            \draw [<->] (-2.75,0) -- (-1,0)
+                node [above,midway] {\tt ps2pdf}
+                node [below,midway] {pdf2ps};
+
+            \draw [<-] (1,0) -- (2.75,0)
+                node [above,midway] {\tt dvi2ps};
+
+            \draw [<-] (-3.75,-0.3) -- (-3.75,-1) -- (3.75,-1)
+                node [above,midway] {\tt dvipdfm} -- (3.75,-0.3);
+
+            \draw [<-] (-4.25,0.3) -- (-4.25,5) -- (-0.75,5)
+                node [above,midway] {\tt pdftex};
+
+            \draw [<-] (-3.25,0.3) -- (-3.25,3.5) -- (-0.75,3.5)
+                node [above,midway] {\tt pdflatex};
+
+            \draw [<-] (4.25,0.3) -- (4.25,5) -- (0.75,5)
+                node [above,midway] {\tt tex};
+
+            \draw [<-] (3.25,0.3) -- (3.25,3.5) -- (0.75,3.5)
+                node [above,midway] {\tt latex};
+
+        \end{tikzpicture}
+    \end{center}
+    \source{\copyright Alessio Damato. Redrawn as TikZ image by S. Fischer}
+\end{frame}
+
+\subsection{Ancillary files}
+
+
+\begin{frame}{Ancillary files}
+    \begin{itemize}
+        \item \TeX{} compilers use a single pass.
+        \item Ancillary files store temporary data to be used in the next 
+            compilation.
+        \item Information regarding the previous compiler pass is located in a 
+            \syspath{*.log} file.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Ancillary files}
+    This presentation generates the following ancillary files:
+    \begin{description}
+        \item[\syspath{*.aux}] Transports information from one compiler run to 
+            the next.
+        \item[\syspath{*.nav}] Beamer class specific.
+        \item[\syspath{*.out}] Hyperref package specific (PDF bookmarks \ldots).
+        \item[\syspath{*.snm}] Beamer class specific.
+        \item[\syspath{*.toc}] Used to produce table of contents.
+        \item[\syspath{*.vrb}] Beamer class specific.
+    \end{description}
+\end{frame}
+
+\begin{frame}[fragile]{Cross-references}
+    \begin{itemize}
+        \item Compiler must be executed a number of times to resolve 
+            cross-references.
+        \item Documents with any of the following (among others) will require 
+            multiple runs of pdflatex:
+        \begin{itemize}
+            \item table of contents
+            \item table of figures
+            \item references to figures
+            \item page~X~of~Y
+        \end{itemize}
+    \end{itemize}
+    \begin{block}{Rerun pdflatex to resolve cross-references}
+\begin{alltt}\scriptsize
+$ pdflatex inputfile | grep "LaTeX Warning"
+{\bf{LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.}}
+$ pdflatex inputfile | grep "LaTeX Warning"
+$ 
+\end{alltt}
+    \end{block}
+
+\end{frame}
+
+
+\subsection{Compilation tools}
+
+\begin{frame}{latex}
+    \begin{center}
+        {\Huge \LaTeX{} $\xrightarrow{\tt latex}$ DVI}
+    \end{center}
+    \begin{block}{}
+        latex executable calls the tex executable with \LaTeX{} initialisation 
+        files, reads a \LaTeX{} \syspath{.tex} file and creates a 
+        \syspath{.dvi}.
+    \end{block}
+    \begin{center}
+        DVI $\xrightarrow{\tt dvi2pdf}$ PDF \\
+    \end{center}
+
+    Supported image formats:
+    \begin{itemize}
+        \item EPS
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{pdflatex}
+    \begin{center}
+        {\Huge \LaTeX{} $\xrightarrow{\tt pdflatex}$ PDF}
+    \end{center}
+    \begin{block}{}
+        pdflatex executable calls the pdftex executable with \LaTeX{} 
+        initialisation files, reads a \LaTeX{} \syspath{.tex} file and creates 
+        a \syspath{.pdf}.
+    \end{block}
+    Supported image formats:
+    \begin{itemize}
+        \item JPG
+        \item PNG
+        \item PDF
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{make}
+    \begin{itemize}
+        \item make can be used to automate the compilation of a \LaTeX{} 
+            project.
+        \item It can be difficult to automate multiple compiler passes without 
+            external scripts.
+        \item There are a number of generic makefiles available for compiling 
+            \LaTeX{} projects.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{rubber}
+    \framesubtitle{
+        \href{https://launchpad.net/rubber}{https://launchpad.net/rubber}
+    }
+
+    \begin{itemize}
+        \item A wrapper for latex and companion programs (written in Python).
+        \item Compiles the project enough times so that all references are 
+            defined.
+        \item Runs BibTeX to manage bibliographic references.
+        \item The command rubber-pipe reads \LaTeX{} source from stdin and 
+            dumps the compiled document on stdout.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{rubber}
+    \framesubtitle{Directives}
+
+    \begin{itemize}
+        \item rubber extracts information from the \LaTeX{} source.
+        \item Sometimes rubber does not know what to do.
+        \item rubber can be instructed with directives which are standard 
+            comments in the \LaTeX{} source.
+    \end{itemize}
+
+    \lstinputlisting[
+        lastline=3,
+    ]{presentation.tex}
+\end{frame}
+
+\begin{frame}{latexmk}
+    \framesubtitle{
+        \href{http://www.ctan.org/pkg/latexmk/}{http://www.ctan.org/pkg/latexmk/}
+    }
+
+    \begin{itemize}
+        \item Perl script for running latex the correct number of times 
+            to resolve cross-references, etc.
+        \item Similar in function to rubber.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Output format (other than PDF)}
+    Many tools exist for converting \LaTeX{}/DVI/PDF files to other formats:
+    \begin{description}
+        \item[tex4ht] HTML, XML, braille, etc., optionally using MathML.
+        \item[latex2rtf] Rich Text Format (first step in converting to an Open 
+            Document Format).
+        \item[pdf2svg] Scalable Vector Graphics.
+        \item[detex] Plain text.
+        \item[catdvi] Plain text, retaining formatting. Pipe through 
+            {\tt fmt -u} to remove justification.
+    \end{description}
+\end{frame}
+
+\section{Tips}
+
+\begin{frame}[fragile]{Tips}
+    \begin{block}{Spell checking}
+        aspell in tex mode
+
+        See the \syspath{spellcheck} directory for an example.
+    \end{block}
+    \begin{block}{Collaboration}
+        Use a version control system such as git.
+    \end{block}
+    \begin{block}{Compressing documents produced with pdflatex}
+\begin{lstlisting}[language=bash]
+$ gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite \
+-sOutputFile=out.pdf in.pdf
+\end{lstlisting}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Dynamic PDF documents in a web application}
+    \framesubtitle{Using rubber-pipe}
+    \lstinputlisting[
+        language=php,
+        frame=none,
+        showstringspaces=false,
+        basicstyle=\tiny\ttfamily
+    ]{fragments/pdflatex.fragment.php}
+\end{frame}
+
+\appendix
+
+\section{Resources}
+
+\begin{frame}{Further reading}
+    \begin{thebibliography}{Wikibooks LaTeX, 2013}
+
+        \bibitem[Oetiker, 2011]{Oetiker2011}
+            Tobias Oetiker et al.
+            \newblock {\em The Not So Short Introduction to \LaTeXe}.
+            \newblock \href{http://tobi.oetiker.ch/lshort/lshort.pdf}
+                {http://tobi.oetiker.ch/lshort/lshort.pdf}
+
+        \bibitem[Wikibooks LaTex, 2013]{WikibooksLaTex2013}
+            Wikibooks
+            \newblock {\em \LaTeX 
+                \footnote{
+                    Some of the markup examples in this presentation were 
+                    inspired, or reproduced verbatim, from 
+                    http://en.wikibooks.org/wiki/LaTeX.
+                }%
+            }.
+            \newblock \href{http://en.wikibooks.org/wiki/LaTeX}
+                {http://en.wikibooks.org/wiki/LaTeX}
+
+    \end{thebibliography}
+\end{frame}
+
+\end{document}
+
